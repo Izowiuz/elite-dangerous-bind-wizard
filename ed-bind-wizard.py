@@ -379,7 +379,10 @@ def generate(results, base, bindings_dir, preset_name):
             deadzone = el.find("Deadzone")
             if deadzone is None:
                 deadzone = ET.SubElement(el, "Deadzone")
-            deadzone.set("Value", AXIS_DEADZONES.get(func, DEFAULT_DEADZONE))
+            # never clobber a deadzone tuned in game / in the base preset
+            if not deadzone.get("Value"):
+                deadzone.set("Value",
+                             AXIS_DEADZONES.get(func, DEFAULT_DEADZONE))
         bound.append(func)
 
     out = os.path.join(bindings_dir, f"{preset_name}.4.2.binds")
